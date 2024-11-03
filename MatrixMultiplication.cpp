@@ -36,7 +36,7 @@ int main()
     MultiplyTransport(400);
     MultiplyTransport(800);
     MultiplyTransport(1600);
-    MultiplyTransport(2000);
+    MultiplyTransport(2000); 
 }
 
 void MultiplyStandart(int const sizeMatrixs)
