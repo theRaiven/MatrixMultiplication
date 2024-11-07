@@ -8,6 +8,19 @@ using namespace std;
 void MultiplyTransport(int const sizeMatrixs);
 void MultiplyStandart(int const sizeMatrixs);
 
+auto Multiply = [](auto firstMatrix, auto secondMatrix, auto multiplyMatrix, int sizeMatrixs)
+{
+    for (int i = 0; i < sizeMatrixs; i++)
+    {
+        for (int j = 0; j < sizeMatrixs; j++)
+        {
+            for (int k = 0; k < sizeMatrixs; k++)
+            {
+                multiplyMatrix[i][j] += firstMatrix[i][k] * secondMatrix[j][k];
+            }
+        }
+    }
+};
 void CreateMatrix(int**& firstMatrix, int**& secondMatrix, int**& multiplyMatrix, int sizeMatrixs);
 auto Transpose = [](auto secondMatrix, int sizeMatrixs)
 {
@@ -36,7 +49,7 @@ int main()
     MultiplyTransport(400);
     MultiplyTransport(800);
     MultiplyTransport(1600);
-    MultiplyTransport(2000); 
+    MultiplyTransport(2000);
 }
 
 void MultiplyStandart(int const sizeMatrixs)
@@ -48,16 +61,9 @@ void MultiplyStandart(int const sizeMatrixs)
     CreateMatrix(firstMatrix, secondMatrix, multiplyMatrix, sizeMatrixs);
 
     auto start{ chrono::high_resolution_clock::now() };
-    for (int i = 0; i < sizeMatrixs; i++)
-    {
-        for (int j = 0; j < sizeMatrixs; j++)
-        {
-            for (int k = 0; k < sizeMatrixs; k++)
-            {
-                multiplyMatrix[i][j] += firstMatrix[i][k] * secondMatrix[k][j];
-            }
-        }
-    }
+
+    Multiply(firstMatrix, secondMatrix, multiplyMatrix, sizeMatrixs);
+
     auto end{ chrono::high_resolution_clock::now() };
     chrono::duration<double> duration = end - start;
 
@@ -74,16 +80,9 @@ void MultiplyTransport(int const sizeMatrixs)
     Transpose(secondMatrix, sizeMatrixs);
 
     auto start{ std::chrono::high_resolution_clock::now() };
-    for (int i = 0; i < sizeMatrixs; i++)
-    {
-        for (int j = 0; j < sizeMatrixs; j++)
-        {
-            for (int k = 0; k < sizeMatrixs; k++)
-            {
-                multiplyMatrix[i][j] += firstMatrix[i][k] * secondMatrix[j][k];
-            }
-        }
-    }
+
+    Multiply(firstMatrix, secondMatrix, multiplyMatrix, sizeMatrixs);
+
     auto end{ std::chrono::high_resolution_clock::now() };
     std::chrono::duration<double> duration = end - start;
 
