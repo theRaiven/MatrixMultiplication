@@ -3,13 +3,12 @@
 
 #include <iostream>
 #include <chrono>
-#include <vector>
 using namespace std;
 
 void MultiplyTransport(int const sizeMatrixs);
 void MultiplyStandart(int const sizeMatrixs);
 
-auto Multiply = [](auto firstMatrix, auto secondMatrix, auto multiplyMatrix, int sizeMatrixs)
+auto Multiply = [](auto firstMatrix, auto secondMatrix, auto& multiplyMatrix, int sizeMatrixs)
 {
     for (int i = 0; i < sizeMatrixs; i++)
     {
@@ -22,15 +21,33 @@ auto Multiply = [](auto firstMatrix, auto secondMatrix, auto multiplyMatrix, int
         }
     }
 };
-auto Transpose = [](auto secondMatrix, int sizeMatrixs)
+auto Transpose = [](auto& secondMatrix, int sizeMatrixs)
 {
     for (int i = 0; i < sizeMatrixs; i++)
     {
         for (int j = i; j < sizeMatrixs; j++)
         {
-            int temp = move(secondMatrix[i][j]);
-            secondMatrix[i][j] = move(secondMatrix[j][i]);
-            secondMatrix[j][i] = move(temp);
+            int temp ;
+            swap(temp, secondMatrix[i][j]);
+            swap(secondMatrix[i][j], secondMatrix[j][i]);
+            swap(secondMatrix[j][i], temp);
+
+        }
+    }
+};
+auto CreateMatirix = [](auto& firstMatrix, auto& secondMatrix, auto& multiplyMatrix, int sizeMatrixs)
+{
+    for (int i = 0; i < sizeMatrixs; i++)
+    {
+        firstMatrix[i] = new int[sizeMatrixs];
+        secondMatrix[i] = new int[sizeMatrixs];
+        multiplyMatrix[i] = new int[sizeMatrixs];
+
+        for (int j = 0; j < sizeMatrixs; j++)
+        {
+            firstMatrix[i][j] = rand() % 100;
+            secondMatrix[i][j] = rand() % 100;
+            multiplyMatrix[i][j] = 0;
         }
     }
 };
@@ -54,22 +71,11 @@ int main()
 
 void MultiplyStandart(int const sizeMatrixs)
 {
-    vector<vector<int>> firstMatrix;
-    vector<vector<int>> secondMatrix;
-    vector<vector<int>> multiplyMatrix;
+    int** firstMatrix{ new int* [sizeMatrixs] };
+    int** secondMatrix{ new int* [sizeMatrixs] };
+    int** multiplyMatrix{ new int* [sizeMatrixs] };
 
-    firstMatrix.reserve(sizeMatrixs);
-    secondMatrix.reserve(sizeMatrixs);
-    multiplyMatrix.reserve(sizeMatrixs);
-
-    for (int i = 0; i < sizeMatrixs; ++i) 
-    {
-        firstMatrix.emplace_back(sizeMatrixs, rand() % 100);
-        secondMatrix.emplace_back(sizeMatrixs, rand() % 100);
-        multiplyMatrix.emplace_back(sizeMatrixs, 0);
-    }
-
-    
+    CreateMatirix(firstMatrix, secondMatrix, multiplyMatrix, sizeMatrixs);
 
     auto start{ chrono::high_resolution_clock::now() };
 
@@ -83,20 +89,11 @@ void MultiplyStandart(int const sizeMatrixs)
 
 void MultiplyTransport(int const sizeMatrixs)
 {
-    vector<vector<int>> firstMatrix;
-    vector<vector<int>> secondMatrix;
-    vector<vector<int>> multiplyMatrix;
+    int** firstMatrix{ new int* [sizeMatrixs] };
+    int** secondMatrix{ new int* [sizeMatrixs] };
+    int** multiplyMatrix{ new int* [sizeMatrixs] };
 
-    firstMatrix.reserve(sizeMatrixs);
-    secondMatrix.reserve(sizeMatrixs);
-    multiplyMatrix.reserve(sizeMatrixs);
-
-    for (int i = 0; i < sizeMatrixs; ++i)
-    {
-        firstMatrix.emplace_back(sizeMatrixs, rand() % 100);
-        secondMatrix.emplace_back(sizeMatrixs, rand() % 100);
-        multiplyMatrix.emplace_back(sizeMatrixs, 0);
-    }
+    CreateMatirix(firstMatrix, secondMatrix, multiplyMatrix, sizeMatrixs);
 
     Transpose(secondMatrix, sizeMatrixs);
 
@@ -109,5 +106,3 @@ void MultiplyTransport(int const sizeMatrixs)
 
     cout << "Время выполнения: " << duration.count() << " секунд" << endl;
 }
-
-
